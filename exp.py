@@ -1,6 +1,7 @@
 import tkinter as tk
 import random as r
 import time
+from patterns import *
 
 # define particulars
 timer = 250
@@ -13,18 +14,7 @@ userWhiteCount = gridSize**2
 userResult=[]
 userGridStatus=[]
 trial = 0
-pattern1=[[0,1,0,1],[1,1,0,0],[0,0,0,0],[1,1,1,1]]
-pattern2=[[1,1,1,1],[1,0,0,1],[1,0,0,1],[0,0,0,0]]
-pattern3=[[1,1,1,0],[1,0,0,0],[0,0,1,1],[1,1,0,0]]
-pattern4=[[0,1,0,1],[1,1,1,1],[1,1,0,0],[0,0,0,0]]
-pattern5=[[1,1,0,1],[1,0,0,1],[1,0,0,1],[0,0,1,0]]
-pattern6=[[1,0,0,0],[0,0,1,1],[1,1,0,0],[1,1,1,0]]
-pattern7=[[1,0,1,0],[0,1,0,1],[1,0,1,0],[0,1,0,1]]
-pattern8=[[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,1]]
-pattern9=[[0,1,0,1],[1,1,1,1],[0,0,0,0],[0,0,1,1]]
-pattern10=[[0,1,1,0],[1,0,1,0],[1,1,0,0],[1,0,0,1]]
 
-patterns = [pattern1,pattern2,pattern3,pattern4,pattern5,pattern6,pattern7,pattern8,pattern9,pattern10]
 
 # Start App - open Tk window
 def open_window():
