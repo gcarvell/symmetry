@@ -3,15 +3,28 @@ import random as r
 import time
 
 # define particulars
+timer = 250
+wait = 2000
 gridSize = 4
 cellSize = 100
 canvasSize = cellSize*(gridSize)+200
 userBlackCount = 0
 userWhiteCount = gridSize**2
+userResult=[]
+userGridStatus=[]
 trial = 0
-pattern1 = [[0,1,0,1],[1,1,0,0],[0,0,0,0],[1,1,1,1]]
-pattern2 = [[1,1,1,1],[1,0,0,1],[1,0,0,1],[0,0,0,0]]
-patterns = [pattern1, pattern2]
+pattern1=[[0,1,0,1],[1,1,0,0],[0,0,0,0],[1,1,1,1]]
+pattern2=[[1,1,1,1],[1,0,0,1],[1,0,0,1],[0,0,0,0]]
+pattern3=[[1,1,1,0],[1,0,0,0],[0,0,1,1],[1,1,0,0]]
+pattern4=[[0,1,0,1],[1,1,1,1],[1,1,0,0],[0,0,0,0]]
+pattern5=[[1,1,0,1],[1,0,0,1],[1,0,0,1],[0,0,1,0]]
+pattern6=[[1,0,0,0],[0,0,1,1],[1,1,0,0],[1,1,1,0]]
+pattern7=[[1,0,1,0],[0,1,0,1],[1,0,1,0],[0,1,0,1]]
+pattern8=[[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,1]]
+pattern9=[[0,1,0,1],[1,1,1,1],[0,0,0,0],[0,0,1,1]]
+pattern10=[[0,1,1,0],[1,0,1,0],[1,1,0,0],[1,0,0,1]]
+
+patterns = [pattern1,pattern2,pattern3,pattern4,pattern5,pattern6,pattern7,pattern8,pattern9,pattern10]
 
 # Start App - open Tk window
 def open_window():
@@ -26,6 +39,10 @@ def display_text(file):
 	with open(file, "r") as f:
 		return f.read()
 
+# def check():
+# 	print("gridStatus: {}".format(self.gridStatus))
+#     print("userGridStatus: {}".format(self.userGridStatus))
+
 def draw_grid():
 	grid = tk.Canvas(width = canvasSize, height = canvasSize)
 	for i in range(0, gridSize):
@@ -34,7 +51,7 @@ def draw_grid():
 			x2 = x1 + cellSize
 			y1 = cellSize*(i+1)
 			y2 = y1 + cellSize
-			grid.create_rectangle(x1, y1, x2, y2, fill = "white", outline = "grey")
+			grid.create_oval(x1, y1, x2, y2, fill = "white", outline = "grey")
 	return grid
 	
 def allow_click(allow):
@@ -45,7 +62,8 @@ def allow_click(allow):
 
 def hide_pattern():
 	grid.pack_forget()
-	grid.after(1000, get_response)
+	global wait
+	grid.after(wait, get_response)
 
 def get_response():
 	allow_click(True)
@@ -85,6 +103,7 @@ def next_trial():
 def swap_colour(loc):
 	global userBlackCount
 	global userWhiteCount
+	global userGridStatus
 	try:
 		if grid.find_withtag("current")[0]:
 			loc=grid.find_withtag("current")[0]
@@ -105,6 +124,7 @@ def swap_colour(loc):
 				userWhiteCount -=1
 				newCol="black"
 		grid.itemconfig(loc,fill = newCol)
+		# useruserGridStatus[row][column] = newCol
 		if userBlackCount >= gridSize**2/2:
 			submitBtn.config(state="normal")
 		else:
@@ -127,7 +147,8 @@ def display_pattern(pattern):
 				grid.itemconfig(k, fill = "white")
 			else:
 				grid.itemconfig(k, fill = "black")
-	grid.after(1000, hide_pattern)
+	global timer
+	grid.after(timer, hide_pattern)
 
 def run_trial(pattern):
 	userBlackCount = 0
@@ -169,7 +190,9 @@ txt = tk.Label(win, text=display_text('start.txt'))
 txt.pack()
 # Generate and display random ID number
 randID = r.randint(100,999)
-rID = tk.Label(win, text = "Please record your ID number: {}".format(randID))
+# rID = tk.Label(win, text = "Please record your ID number: {}".format(randID))
+# rID.pack()
+rID = tk.Label(win, text = "Time: {}".format(timer))
 rID.pack()
 # log randID
 
