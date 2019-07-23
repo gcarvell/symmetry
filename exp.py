@@ -5,7 +5,7 @@ from patterns import *
 import csv
 
 # define particulars
-timer = 350
+timer = 250
 wait = 2000
 gridSize = 4
 cellSize = 100

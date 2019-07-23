@@ -84,6 +84,8 @@ def swap_colour(loc):
 3) add practice trials first, with longer display
 10) Package
 
+datas=[('start.txt', '.'),('end.txt', '.'),('break.txt', '.'),('feedback_correct.txt', '.'),('feedback_incorrect.txt', '.'),('mask.gif', '.')]
+
 
 
 Order is 4 lists of 66 values (0-65) each shuffled
