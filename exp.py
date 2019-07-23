@@ -13,7 +13,40 @@ userBlackCount = 0
 userWhiteCount = gridSize**2
 userResult=[]
 userGridStatus=[]
+trialGridStatus=[]
 trial = 0
+
+def printy():
+	try:
+		print("Trial Grid Status:")
+		for i in range(0, gridSize):
+			row = []
+			for j in range(0, gridSize):
+				row.append(trialGridStatus[i][j])
+			print(row)
+		print("_______________")
+	except IndexError:
+		pass
+	try:
+		print("User Grid Status:")
+		for i in range(0, gridSize):
+			row = []
+			for j in range(0, gridSize):
+				row.append(userGridStatus[i][j])
+			print(row)
+		print("_______________")
+	except IndexError:
+		pass
+	try:
+		print("User result:")
+		for i in range(0, gridSize):
+			row = []
+			for j in range(0, gridSize):
+				row.append(userResult[i][j])
+			print(row)
+		print("_______________")
+	except IndexError:
+		pass
 
 
 # Start App - open Tk window
@@ -52,7 +85,7 @@ def allow_click(allow):
 
 def hide_pattern():
 	grid.pack_forget()
-	mask.pack(fill='both', expand=True)
+	mask.pack(fill='both', expand=True, anchor='n')
 	global wait
 	grid.after(wait, get_response)
 
@@ -68,14 +101,42 @@ def blank_grid():
 		grid.itemconfig(k, fill = "white")
 
 def submit():
+	printy()
+	global userGridStatus
+	global userResult
 	grid.pack_forget()
 	submitBtn.pack_forget()
 	submitBtn.config(state="disabled")	
 	# check!
-	feedback_cor.pack()
-	grid.after(2000, next_trial)
+	check=0
+	for i in range(0, gridSize):
+		row = []
+		for j in range(0, gridSize):			
+			if trialGridStatus[i][j]==userGridStatus[i][j]:
+				row.append(("correct"))
+				check += 1
+			else:
+				row.append(("incorrect"))
+		userResult.append(row)
+	# if all correct, give positive feedback, else give negative feedback
+	if check == gridSize**2:
+		feedback_cor.pack()
+	else:
+		feedback_incor.pack()
+	# reset userGrid to all white and result to empty strings
+	for i in range(0, gridSize):
+		print(userResult[i])
+		for j in range(0, gridSize):
+			userGridStatus[i][j]="white"
+			userResult[i][j]= ""
+	grid.after(1500, pause)
 	# log response
 	# pause then next trial
+def pause():
+	feedback_cor.pack_forget()
+	feedback_incor.pack_forget()
+	grid.after(1000, next_trial)
+
 def next_trial():
 	global userBlackCount
 	global userWhiteCount
@@ -83,7 +144,6 @@ def next_trial():
 	global patterns
 	userBlackCount = 0
 	userWhiteCount = gridSize**2
-	feedback_cor.pack_forget()
 	trial += 1
 	if trial < len(patterns):
 		run_trial(patterns[trial])
@@ -95,13 +155,12 @@ def next_trial():
 def swap_colour(loc):
 	global userBlackCount
 	global userWhiteCount
-	global userGridStatus
 	try:
 		if grid.find_withtag("current")[0]:
 			loc=grid.find_withtag("current")[0]
 		else:
 			return
-		#get fill colour for circle
+		#get fill colour for canvas item rect
 		col = grid.itemcget(loc,"fill")
 		# if black, swap to white, vice versa
 		if col=="black":
@@ -116,11 +175,21 @@ def swap_colour(loc):
 				userWhiteCount -=1
 				newCol="black"
 		grid.itemconfig(loc,fill = newCol)
-		# useruserGridStatus[row][column] = newCol
 		if userBlackCount >= gridSize**2/2:
 			submitBtn.config(state="normal")
 		else:
 			submitBtn.config(state="disabled")
+		row = 0
+		column = 0
+		for k in range(0, gridSize):
+			if loc < (k+1)*gridSize+1:
+				row = k
+				break
+		if loc % gridSize == 0:
+			column = gridSize-1
+		else:
+			column = loc % gridSize-1
+		userGridStatus[row][column] = newCol
 	except IndexError:
 		pass
 
@@ -133,14 +202,20 @@ def display_pattern(pattern):
 			k += 1
 			if pattern[i][j] == 0:
 				grid.itemconfig(k, fill = "white")
+				trialGridStatus[i][j] = "white"
 			else:
 				grid.itemconfig(k, fill = "black")
+				trialGridStatus[i][j] = "black"
 	global timer
 	# pattern is displayed for a specified duration (ms), then hidden
 	grid.after(timer, hide_pattern)
 
 def run_trial(pattern):
+	global trialGridStatus
+	trialGridStatus = pattern
+	global userBlackCount
 	userBlackCount = 0
+	global userWhiteCount
 	userWhiteCount = gridSize**2
 	# don't allow subject to click grid
 	allow_click(False)
@@ -157,6 +232,16 @@ def start():
 	# remove start button
 	startBtn.pack_forget()
 
+
+	for i in range(0, gridSize):
+		row = []
+		userRow = []
+		for j in range(0, gridSize):
+			row.append("white")
+			userRow.append("white")
+		trialGridStatus.append(row)
+		userGridStatus.append(userRow)
+
 	# Get patterns
 
 
@@ -170,7 +255,8 @@ def start():
 
 
 win = open_window()
-
+bump = tk.Frame(win, height = 50)
+bump.pack(fill='x')
 # Display start text
 txt = tk.Label(win, text=display_text('start.txt'), justify=tk.CENTER, padx = 100, pady = 50, font=("Helvetica", 12))
 txt.pack()
@@ -187,7 +273,6 @@ grid = draw_grid()
 startBtn = tk.Button(win, text="START", command=start)
 startBtn.pack()
 # prepare noise mask
-
 img = tk.PhotoImage(file='mask.gif')
 mask = tk.Label(win, image=img)
 
@@ -196,7 +281,7 @@ submitBtn = tk.Button(win, text = "Submit",command=submit)
 submitBtn.config(state="disabled")
 # prepare feedback
 feedback_cor = tk.Label(win, height = 200, width = 200, bg = 'green', text=display_text('feedback_correct.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
-feedback_incor = tk.Label(win, height = 200, width = 200, bg = 'green', text=display_text('feedback_incorrect.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
+feedback_incor = tk.Label(win, height = 200, width = 200, bg = 'red', text=display_text('feedback_incorrect.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
 
 try:
 	win.mainloop() #Open window
