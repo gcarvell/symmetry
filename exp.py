@@ -19,9 +19,10 @@ total = 0
 trial = 0
 currBlock = 0
 
-order = [list(range(66)), list(range(66)), list(range(66)), list(range(66))]
+order = [list(range(8)),list(range(66)), list(range(66)), list(range(66)), list(range(66))]
 for block in order:
 	r.shuffle(block)
+
 
 def printy():
 	try:
@@ -134,9 +135,8 @@ def submit():
 		for j in range(0, gridSize):
 			userGridStatus[i][j]="white"
 			userResult[i][j]= ""
-	grid.after(1500, pause)
-	# log response
 	# pause then next trial
+	grid.after(1500, pause)
 
 def save_data(result):
 	data = [currBlock, trial, total, order[currBlock][trial]]
@@ -167,12 +167,15 @@ def next_trial():
 	contBtn.pack_forget()
 
 	trial += 1
-	if trial < 66:
+	if trial < len(order[currBlock]):
 		total +=1
-		run_trial(patterns[order[currBlock][trial]])
-	elif currBlock < 3:
+		if currBlock ==0:
+			run_trial(pracPatterns[order[currBlock][trial]])
+		else:
+			run_trial(patterns[order[currBlock][trial]])
+	elif currBlock < len(order)-1:
 		currBlock +=1
-		trial = 0
+		trial = -1
 		break_screen()
 	else:
 		endText = tk.Label(win, text=display_text('end.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 18))
@@ -228,6 +231,7 @@ def swap_colour(loc):
 def display_pattern(pattern):
 	k=0
 	grid.pack()
+	test = 0
 	for i in range(0, gridSize):
 		for j in range(0, gridSize):
 			k += 1
@@ -235,8 +239,11 @@ def display_pattern(pattern):
 				grid.itemconfig(k, fill = "white")
 				trialGridStatus[i][j] = "white"
 			else:
+				test += 1
 				grid.itemconfig(k, fill = "black")
 				trialGridStatus[i][j] = "black"
+	if test!=8:
+		print("broken")
 	global timer
 	# pattern is displayed for a specified duration (ms), then hidden
 	grid.after(timer, hide_pattern)
@@ -273,12 +280,6 @@ def start():
 		trialGridStatus.append(row)
 		userGridStatus.append(userRow)
 
-	# Get patterns
-
-
-	# for each pattern
-		# run tr
-		# ial:
 	global trial
 	global patterns
 	run_trial(patterns[order[currBlock][trial]])

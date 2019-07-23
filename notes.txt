@@ -74,22 +74,41 @@ def swap_colour(loc):
 
 1) patterns in random order
 2) generate a new random order for each block 
-
-3) add practice trials first, with longer display
 7) keep track of which pattern is being displayed
+9) add block to output list
 8) keep track of which trial we are on
-4) do four blocks + practice trials
 5) add break screen in between blocks
 6) click anywhere to continue to next block
-9) add block to output list
+4) do four blocks
+
+3) add practice trials first, with longer display
+10) Package
+
+
 
 Order is 4 lists of 66 values (0-65) each shuffled
 [i] is the block, [j] is the trial within that block
 and the value is the pattern number
 
+total = 0
 trial = 0
 block = 0
 pattern = patterns[order[block][trial]]
+
+total +=1
+trial += 1
+if trial < 66:
+    run_trial(patterns[order[block][trial]])
+else if block < 4:
+    block +=1
+    trial = 0
+    break_screen() ---on click run next trial
+else:
+    end
+
+
+
+
 
 	trial += 1
 	if trial < len(patterns):
