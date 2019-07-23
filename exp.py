@@ -5,7 +5,7 @@ from patterns import *
 import csv
 
 # define particulars
-timer = 400
+timer = 350
 wait = 2000
 gridSize = 4
 cellSize = 100
@@ -163,10 +163,12 @@ def next_trial():
 	global currBlock
 	userBlackCount = 0
 	userWhiteCount = gridSize**2
-	
-	total +=1
+	breakText.pack_forget()
+	contBtn.pack_forget()
+
 	trial += 1
 	if trial < 66:
+		total +=1
 		run_trial(patterns[order[currBlock][trial]])
 	elif currBlock < 3:
 		currBlock +=1
@@ -176,12 +178,9 @@ def next_trial():
 		endText = tk.Label(win, text=display_text('end.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 18))
 		endText.pack()
 
-	#  trial += 1
-	# if trial < len(patterns):
-	# 	run_trial(patterns[trial])
-	# else:
-		# endText = tk.Label(win, text=display_text('end.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 18))
-		# endText.pack()
+def break_screen():
+	breakText.pack()
+	contBtn.pack()
 
 # change colour of square on click
 def swap_colour(loc):
@@ -282,7 +281,7 @@ def start():
 		# ial:
 	global trial
 	global patterns
-	run_trial(patterns[trial])
+	run_trial(patterns[order[currBlock][trial]])
 
 
 win = open_window()
@@ -306,18 +305,22 @@ output.close()
 grid = draw_grid()
 
 # add START button
-startBtn = tk.Button(win, text="START", command=start)
+startBtn = tk.Button(win, text="Start", command=start, font=("Helvetica", 18))
 startBtn.pack()
 # prepare noise mask
 img = tk.PhotoImage(file='mask.gif')
 mask = tk.Label(win, image=img)
 
 # prepare submit button
-submitBtn = tk.Button(win, text = "Submit",command=submit)
+submitBtn = tk.Button(win, text = "Submit",command=submit, font=("Helvetica", 18))
 submitBtn.config(state="disabled")
 # prepare feedback
 feedback_cor = tk.Label(win, height = 100, width = 100, bg = 'green', text=display_text('feedback_correct.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
 feedback_incor = tk.Label(win, height = 100, width = 100, bg = 'red', text=display_text('feedback_incorrect.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
+# prepare breakscreen
+breakText = tk.Label(win, text=display_text('break.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 18))
+contBtn = tk.Button(win, text="Continue", command=next_trial, font=("Helvetica", 18))
+
 
 try:
 	win.mainloop() #Open window
