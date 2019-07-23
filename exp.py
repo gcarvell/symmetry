@@ -2,9 +2,10 @@ import tkinter as tk
 import random as r
 import time
 from patterns import *
+import csv
 
 # define particulars
-timer = 250
+timer = 400
 wait = 2000
 gridSize = 4
 cellSize = 100
@@ -14,7 +15,13 @@ userWhiteCount = gridSize**2
 userResult=[]
 userGridStatus=[]
 trialGridStatus=[]
+total = 0
 trial = 0
+currBlock = 0
+
+order = [list(range(66)), list(range(66)), list(range(66)), list(range(66))]
+for block in order:
+	r.shuffle(block)
 
 def printy():
 	try:
@@ -62,10 +69,6 @@ def display_text(file):
 	with open(file, "r") as f:
 		return f.read()
 
-# def check():
-# 	print("gridStatus: {}".format(self.gridStatus))
-#     print("userGridStatus: {}".format(self.userGridStatus))
-
 def draw_grid():
 	grid = tk.Canvas(width = canvasSize, height = canvasSize)
 	for i in range(0, gridSize):
@@ -101,7 +104,6 @@ def blank_grid():
 		grid.itemconfig(k, fill = "white")
 
 def submit():
-	printy()
 	global userGridStatus
 	global userResult
 	grid.pack_forget()
@@ -123,15 +125,30 @@ def submit():
 		feedback_cor.pack()
 	else:
 		feedback_incor.pack()
+
+	# Save output data
+	save_data(userGridStatus)
+
 	# reset userGrid to all white and result to empty strings
 	for i in range(0, gridSize):
-		print(userResult[i])
 		for j in range(0, gridSize):
 			userGridStatus[i][j]="white"
 			userResult[i][j]= ""
 	grid.after(1500, pause)
 	# log response
 	# pause then next trial
+
+def save_data(result):
+	data = [currBlock, trial, total, order[currBlock][trial]]
+	# flatten result
+	flat_result = [item for row in result for item in row]
+	# add trial number and pattern number
+	data.extend(flat_result)
+	with open(filename, 'a', newline='') as output:
+		writer = csv.writer(output)
+		writer.writerow(data)
+	output.close()
+
 def pause():
 	feedback_cor.pack_forget()
 	feedback_incor.pack_forget()
@@ -142,14 +159,29 @@ def next_trial():
 	global userWhiteCount
 	global trial
 	global patterns
+	global total
+	global currBlock
 	userBlackCount = 0
 	userWhiteCount = gridSize**2
+	
+	total +=1
 	trial += 1
-	if trial < len(patterns):
-		run_trial(patterns[trial])
+	if trial < 66:
+		run_trial(patterns[order[currBlock][trial]])
+	elif currBlock < 3:
+		currBlock +=1
+		trial = 0
+		break_screen()
 	else:
 		endText = tk.Label(win, text=display_text('end.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 18))
 		endText.pack()
+
+	#  trial += 1
+	# if trial < len(patterns):
+	# 	run_trial(patterns[trial])
+	# else:
+		# endText = tk.Label(win, text=display_text('end.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 18))
+		# endText.pack()
 
 # change colour of square on click
 def swap_colour(loc):
@@ -253,10 +285,8 @@ def start():
 	run_trial(patterns[trial])
 
 
-
 win = open_window()
-bump = tk.Frame(win, height = 50)
-bump.pack(fill='x')
+
 # Display start text
 txt = tk.Label(win, text=display_text('start.txt'), justify=tk.CENTER, padx = 100, pady = 50, font=("Helvetica", 12))
 txt.pack()
@@ -265,7 +295,13 @@ randID = r.randint(100,999)
 rID = tk.Label(win, text = "Please record your ID number: {}".format(randID), pady = 10, font=("Helvetica", 12))
 rID.pack()
 # log randID
-
+# prepare file for saving
+header = [["Participant", randID], ["Block", "Trial", "Total", "Pattern",  "1,1", "1,2", "1,3", "1,4", "2,1", "2,2", "2,3", "2,4", "3,1", "3,2", "3,3", "3,4", "4,1", "4,2", "4,3", "4,4"]]
+filename = "Sym{}.csv".format(randID)
+with open(filename, 'w', newline='') as output:
+    writer = csv.writer(output)
+    writer.writerows(header)
+output.close()
 # create grid
 grid = draw_grid()
 
@@ -280,8 +316,8 @@ mask = tk.Label(win, image=img)
 submitBtn = tk.Button(win, text = "Submit",command=submit)
 submitBtn.config(state="disabled")
 # prepare feedback
-feedback_cor = tk.Label(win, height = 200, width = 200, bg = 'green', text=display_text('feedback_correct.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
-feedback_incor = tk.Label(win, height = 200, width = 200, bg = 'red', text=display_text('feedback_incorrect.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
+feedback_cor = tk.Label(win, height = 100, width = 100, bg = 'green', text=display_text('feedback_correct.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
+feedback_incor = tk.Label(win, height = 100, width = 100, bg = 'red', text=display_text('feedback_incorrect.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
 
 try:
 	win.mainloop() #Open window

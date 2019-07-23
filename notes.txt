@@ -1,0 +1,103 @@
+        self.userResult=[]
+        self.gridStatus = []
+        self.userGridStatus = []
+        
+ CREATE
+        def initGrid(self):
+            for i in range(0, gridSize):
+                row = []
+                userRow = []
+                for j in range(0, gridSize):
+                    row.append(0)
+                    userRow.append(0)
+            gridStatus.append(row)
+            userGridStatus.append(userRow)
+
+UPDATE
+        for k in range(0, gridSize):
+            if loc < (k+1)*gridSize+1:
+                row = k
+                break
+            if loc % gridSize == 0:
+                column = gridSize-1
+            else:
+                column = loc % gridSize-1
+            userGridStatus[row][column] = newCol
+
+
+CHECK
+        for i in range(0, gridSize):
+            row = []
+            for j in range(0, gridSize):
+                if trialgridStatus[i][j]==userGridStatus[i][j]:
+                    row.append((1,userGridStatus[i][j]))
+                else:
+                    row.append((0,userGridStatus[i][j]))
+            userResult.append(row)
+        print("userResult: {}".format(userResult))
+
+        #sum userresults, if sum==gridsize**2 give feedback correct else give feedback incorrect
+
+
+
+# change colour of square on click
+def swap_colour(loc):
+	global userBlackCount
+	global userWhiteCount
+	try:
+		if grid.find_withtag("current")[0]:
+			loc=grid.find_withtag("current")[0]
+		else:
+			return
+		#get fill colour for canvas item rect
+		col = grid.itemcget(loc,"fill")
+		# if black, swap to white, vice versa
+		if col=="black":
+			userWhiteCount +=1
+			userBlackCount -=1
+			newCol="white"
+		else:
+			if userBlackCount >= gridSize**2/2:
+				newCol = "white"
+			else:
+				userBlackCount +=1
+				userWhiteCount -=1
+				newCol="black"
+		grid.itemconfig(loc,fill = newCol)
+		if userBlackCount >= gridSize**2/2:
+			submitBtn.config(state="normal")
+		else:
+			submitBtn.config(state="disabled")
+	except IndexError:
+		pass
+
+
+1) patterns in random order
+2) generate a new random order for each block 
+
+3) add practice trials first, with longer display
+7) keep track of which pattern is being displayed
+8) keep track of which trial we are on
+4) do four blocks + practice trials
+5) add break screen in between blocks
+6) click anywhere to continue to next block
+9) add block to output list
+
+Order is 4 lists of 66 values (0-65) each shuffled
+[i] is the block, [j] is the trial within that block
+and the value is the pattern number
+
+trial = 0
+block = 0
+pattern = patterns[order[block][trial]]
+
+	trial += 1
+	if trial < len(patterns):
+		run_trial(patterns[trial])
+
+
+
+
+
+
+
