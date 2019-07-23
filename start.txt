@@ -1,1 +1,16 @@
-INSTRUCTIONS GO HERE
+In this experiment, you will see a grid of black and white circles appear briefly on the screen, followed by a blank grid. 
+
+
+Each pattern contains 8 white circles and 8 black circles in some arrangement. 
+
+The task is to reproduce the pattern you saw, by clicking on the circles in the blank grid to turn them black. 
+
+You can ‘undo’ a selection by clicking on it again. 
+
+Once you have selected 8 black circles for your response, click ‘submit’ to move on to the next pattern. 
+
+
+You will receive feedback after each response. 
+
+
+You should respond at whatever pace feels comfortable and natural for you.
