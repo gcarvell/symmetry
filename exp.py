@@ -1,7 +1,7 @@
 import tkinter as tk
 import random as r
 import time
-from patterns import *
+from patterns2 import patterns, pracPatterns
 import csv
 
 # define particulars
@@ -19,7 +19,8 @@ total = 0
 trial = 0
 currBlock = 0
 
-order = [list(range(8)),list(range(66)), list(range(66)), list(range(66)), list(range(66))]
+order = [list(range(len(pracPatterns))),list(range(len(patterns))), list(range(len(patterns)))]
+
 for block in order:
 	r.shuffle(block)
 
@@ -169,7 +170,7 @@ def next_trial():
 	trial += 1
 	if trial < len(order[currBlock]):
 		total +=1
-		if currBlock ==0:
+		if currBlock == 0:
 			run_trial(pracPatterns[order[currBlock][trial]])
 		else:
 			run_trial(patterns[order[currBlock][trial]])
@@ -235,15 +236,16 @@ def display_pattern(pattern):
 	for i in range(0, gridSize):
 		for j in range(0, gridSize):
 			k += 1
-			if pattern[i][j] == 0:
+			print("{}, {} currently: {}".format(i,j,grid.itemcget(k, "fill")))
+			print("New colour: {}".format(pattern[i][j]))
+			if pattern[i][j] == 0 or pattern[i][j] == "white":
 				grid.itemconfig(k, fill = "white")
 				trialGridStatus[i][j] = "white"
 			else:
 				test += 1
 				grid.itemconfig(k, fill = "black")
 				trialGridStatus[i][j] = "black"
-	if test!=8:
-		print("broken")
+
 	global timer
 	# pattern is displayed for a specified duration (ms), then hidden
 	grid.after(timer, hide_pattern)
@@ -270,19 +272,20 @@ def start():
 	# remove start button
 	startBtn.pack_forget()
 
-
+	#initialize trial and user grid status
 	for i in range(0, gridSize):
-		row = []
+		trialRow = []
 		userRow = []
 		for j in range(0, gridSize):
-			row.append("white")
+			trialRow.append("white")
 			userRow.append("white")
-		trialGridStatus.append(row)
+		trialGridStatus.append(trialRow)
 		userGridStatus.append(userRow)
 
 	global trial
-	global patterns
-	run_trial(patterns[order[currBlock][trial]])
+	global pracPatterns
+
+	run_trial(pracPatterns[order[currBlock][trial]])
 
 
 win = open_window()
