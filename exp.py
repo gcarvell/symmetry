@@ -1,7 +1,7 @@
 import tkinter as tk
 import random as r
 import time
-from patterns2 import patterns, pracPatterns
+from patterns import patterns, pracPatterns
 import csv
 
 # define particulars
@@ -90,7 +90,7 @@ def allow_click(allow):
 
 def hide_pattern():
 	grid.pack_forget()
-	mask.pack(fill='both', expand=True, anchor='n')
+	mask.pack(anchor='n') #fill='both', expand=True, anchor='n'
 	global wait
 	grid.after(wait, get_response)
 
@@ -236,8 +236,6 @@ def display_pattern(pattern):
 	for i in range(0, gridSize):
 		for j in range(0, gridSize):
 			k += 1
-			print("{}, {} currently: {}".format(i,j,grid.itemcget(k, "fill")))
-			print("New colour: {}".format(pattern[i][j]))
 			if pattern[i][j] == 0 or pattern[i][j] == "white":
 				grid.itemconfig(k, fill = "white")
 				trialGridStatus[i][j] = "white"
@@ -312,19 +310,18 @@ grid = draw_grid()
 startBtn = tk.Button(win, text="Start", command=start, font=("Helvetica", 18))
 startBtn.pack()
 # prepare noise mask
-img = tk.PhotoImage(file='mask.gif')
+img = tk.PhotoImage(file='mask.png', height=canvasSize, width=canvasSize)
 mask = tk.Label(win, image=img)
 
 # prepare submit button
 submitBtn = tk.Button(win, text = "Submit",command=submit, font=("Helvetica", 18))
 submitBtn.config(state="disabled")
 # prepare feedback
-feedback_cor = tk.Label(win, height = 100, width = 100, bg = 'green', text=display_text('feedback_correct.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
-feedback_incor = tk.Label(win, height = 100, width = 100, bg = 'red', text=display_text('feedback_incorrect.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
+feedback_cor = tk.Label(win, height = 100, width = 100, bg = '#4cbc53', text=display_text('feedback_correct.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
+feedback_incor = tk.Label(win, height = 100, width = 100, bg = '#bc534c', text=display_text('feedback_incorrect.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 50))
 # prepare breakscreen
 breakText = tk.Label(win, text=display_text('break.txt'), justify=tk.CENTER, pady = 200, font=("Helvetica", 18))
 contBtn = tk.Button(win, text="Continue", command=next_trial, font=("Helvetica", 18))
-
 
 try:
 	win.mainloop() #Open window
